@@ -205,7 +205,7 @@ switch ($callback_data[0]) {
 				if ($results['play_2'] == 'rock') {
 					$play_win = '✊';
 					$play_lose = '✋';
-					$winner = 2;
+					$winner = 1;
 				}
 				if ($results['play_2'] == 'paper') {
 					$play_tie = '✋';
@@ -214,7 +214,7 @@ switch ($callback_data[0]) {
 				if ($results['play_2'] == 'scissors') {
 					$play_win = '✌';
 					$play_lose = '✋';
-					$winner = 1;
+					$winner = 2;
 				}
 			}
 
