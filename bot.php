@@ -234,14 +234,17 @@ switch ($callback_data[0]) {
 			if ($winner == NULL) {
 				mysqli_query($db, "UPDATE history set result='tie' where game_id='".$callback_message_id."'");
 				updateMessage($callback_message_id, "Игра окончена\!\n\nНичья, @".strtr($results['player_1_username'], $markdownify_array)." и @".strtr($results['player_2_username'], $markdownify_array)." выбрали ".$play_tie, $game_keyboard);
-			} else {
+                break;
+            } else {
 				if ($winner == 1) {
 					mysqli_query($db, "UPDATE history set result='player_1_won' where game_id='".$callback_message_id."'");
 					updateMessage($callback_message_id, "Игра окончена\!\n\nВыиграл @".strtr($results['player_1_username'], $markdownify_array)." c ".$play_win." против @".strtr($results['player_2_username'], $markdownify_array)." и его ".$play_lose, $game_keyboard);
-				} else {
+                    break;
+                } else {
 					mysqli_query($db, "UPDATE history set result='player_2_won' where game_id='".$callback_message_id."'");
 					updateMessage($callback_message_id, "Игра окончена\!\n\nВыиграл @".strtr($results['player_2_username'], $markdownify_array)." c ".$play_win." против @".strtr($results['player_1_username'], $markdownify_array)." и его ".$play_lose, $game_keyboard);
-				}
+                    break;
+                }
 			}
 			break;
 		} else {
