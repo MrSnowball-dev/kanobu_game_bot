@@ -72,18 +72,10 @@ if ($message == '/start') {
 }
 
 if ($query_id !== 'inline_query_id_empty') {
-	$db = mysqli_connect($db_host, $db_username, $db_pass, $db_schema);
-	mysqli_set_charset($db, 'utf8mb4');
-	mysqli_query($db, "SET NAMES utf8mb4 COLLATE utf8mb4_unicode_ci");
-	if (mysqli_connect_errno()) error_log("Failed to connect to MySQL: " . mysqli_connect_error());
-		else echo "MySQL connect successful.\n";
-
 	$knb_keyboard = ['inline_keyboard' => [
 		[['text' => 'Я в деле!', 'callback_data' => 'stage_1:'.$inline_user_id.':'.$inline_username]]
 	]];
 	sendNewGame($query_id, "@".$inline_username." хочет сыграть в Камень Ножницы Бумагу\!\n\nНажми на кнопку чтобы присоединиться:", $knb_keyboard);
-
-	mysqli_close($db);
 }
 
 $callback_data = explode(':', $callback_data);
@@ -177,8 +169,6 @@ switch ($callback_data[0]) {
 			} elseif ($where_to_put_play['player_2'] == $callback_user_id) {
 				mysqli_query($db, "UPDATE history set play_2='".$callback_data[1]."' WHERE game_id='".$callback_message_id."'");
 			}
-
-			error_log("GAME:\n".print_r($callback_message_id, TRUE)."\n\n\nUSER:\n".print_r($callback_user_id, TRUE));
 	
 			$results = mysqli_fetch_assoc(mysqli_query($db, "SELECT play_1, play_2, player_1_username, player_2_username FROM history where game_id='".$callback_message_id."'"));
 			$winner = NULL;
@@ -217,18 +207,18 @@ switch ($callback_data[0]) {
 			if ($winner == NULL) {
 				mysqli_query($db, "UPDATE history set result='tie' where game_id='".$callback_message_id."'");
 				updateMessage($callback_message_id, "Игра окончена\!\n\nНичья, @".strtr($results['player_1_username'], $markdownify_array)." и @".strtr($results['player_2_username'], $markdownify_array)." выбрали ".$results['play_1'], $game_keyboard);
-				break;
 			} else {
 				if ($winner == 1) {
 					mysqli_query($db, "UPDATE history set result='player_1_won' where game_id='".$callback_message_id."'");
 					updateMessage($callback_message_id, "Игра окончена\!\n\nВыиграл @".strtr($results['player_1_username'], $markdownify_array)." c ".$results['play_1']." против @".strtr($results['player_2_username'], $markdownify_array)." и его ".$results['play_2'], $game_keyboard);
-					break;
 				} else {
 					mysqli_query($db, "UPDATE history set result='player_2_won' where game_id='".$callback_message_id."'");
 					updateMessage($callback_message_id, "Игра окончена\!\n\nВыиграл @".strtr($results['player_2_username'], $markdownify_array)." c ".$results['play_2']." против @".strtr($results['player_1_username'], $markdownify_array)." и его ".$results['play_1'], $game_keyboard);
-					break;
 				}
 			}
+
+			mysqli_free_result($results);
+			mysqli_close($db);
 			break;
 		} else {
 			$game_keyboard = ['inline_keyboard' => [
