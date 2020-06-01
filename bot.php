@@ -24,7 +24,7 @@ $dice_result = isset($output['message']['dice']['value']) ? $output['message']['
 
 $inline = isset($output['inline_query']) ? $output['inline_query'] : 'inline_query_empty';
 $inline_user_id = isset($output['inline_query']['from']['id']) ? $output['inline_query']['from']['id'] : 'inline_user_id_empty';
-$inline_user_first_name = isset($output['inline_query']['from']['first_name']) ? "[".$output['inline_query']['from']['first_name']."](tg://user?id=".$inline_user_id.")" : 'inline_user_first_name_empty';
+$inline_user_first_name = isset($output['inline_query']['from']['first_name']) ? $output['inline_query']['from']['first_name'] : 'inline_user_first_name_empty';
 $inline_username = isset($output['inline_query']['from']['username']) ? "@".$output['inline_query']['from']['username'] : $inline_user_first_name;
 $query_id = isset($inline['id']) ? $inline['id'] : 'inline_query_id_empty';
 $query = isset($inline['query']) ? $inline['query'] : 'inline_query_empty';
@@ -34,7 +34,7 @@ $callback_id = isset($callback_query['id']) ? $callback_query['id'] : 'callback_
 $callback_data = isset($callback_query['data']) ? $callback_query['data'] : 'callback_data_empty'; //ответ от клавиатуры идет сюда
 $callback_chat_id = isset($callback_query['chat_instance']) ? $callback_query['chat_instance'] : 'callback_chat_id_empty'; //id чата, где был вызов клавиатуры
 $callback_user_id = isset($callback_query['from']['id']) ? $callback_query['from']['id'] : 'callback_user_id_empty'; //id юзера, что нажал на клаву
-$callback_user_first_name = isset($callback_query['from']['first_name']) ? "[".$callback_query['from']['first_name']."](tg://user?id=".$callback_user_id.")" : 'callback_user_first_name_empty';
+$callback_user_first_name = isset($callback_query['from']['first_name']) ? $callback_query['from']['first_name'] : 'callback_user_first_name_empty';
 $callback_username = isset($callback_query['from']['username']) ? "@".$callback_query['from']['username'] : $callback_user_first_name;
 $callback_message_id = isset($callback_query['inline_message_id']) ? $callback_query['inline_message_id'] : 'callback_message_id_empty'; //id того сообщения, в котором нажата кнопка клавиатуры
 
