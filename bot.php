@@ -203,8 +203,8 @@ switch ($callback_data[0]) {
 
 			if ($results['play_1'] == 'paper') {
 				if ($results['play_2'] == 'rock') {
-					$play_win = '✊';
-					$play_lose = '✋';
+					$play_win = '✋';
+					$play_lose = '✊';
 					$winner = 1;
 				}
 				if ($results['play_2'] == 'paper') {
