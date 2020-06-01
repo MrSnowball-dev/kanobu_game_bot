@@ -96,7 +96,7 @@ switch ($callback_data[0]) {
 			$knb_keyboard = ['inline_keyboard' => [
 				[['text' => 'Я в деле', 'callback_data' => 'stage_1:'.$inline_user_id.':'.$inline_username]]
 			]];
-			updateMessage($$callback_message_id, "@".$inline_username." хочет сыграть в Камень Ножницы Бумагу\!\n\nНажми на кнопку чтобы присоединиться:", $knb_keyboard, "Вы не можете играть сами с собой, какой в этом смысл?");
+			updateMessage($$callback_message_id, "@".strtr($inline_username, $markdownify_array)." хочет сыграть в Камень Ножницы Бумагу\!\n\nНажми на кнопку чтобы присоединиться:", $knb_keyboard, "Вы не можете играть сами с собой, какой в этом смысл?");
 			break;
 		}
 		$db = mysqli_connect($db_host, $db_username, $db_pass, $db_schema);
@@ -111,7 +111,7 @@ switch ($callback_data[0]) {
 			[['text' => '✊', 'callback_data' => 'stage_2:rock:'.$callback_user_id], ['text' => '✋', 'callback_data' => 'stage_2:paper:'.$callback_user_id], ['text' => '✌', 'callback_data' => 'stage_2:scissors:'.$callback_user_id]]
 		]];
 
-		updateMessage($callback_message_id, "Отлично\!\n\nИграют @".$callback_data[2]." и @".$callback_username."\n\nОжидаю хода\.\.\.", $game_keyboard);
+		updateMessage($callback_message_id, "Отлично\!\n\nИграют @".strtr($callback_data[2], $markdownify_array)." и @".strtr($callback_username, $markdownify_array)."\n\nОжидаю хода\.\.\.", $game_keyboard);
 
 		mysqli_close($db);
 	break;
@@ -135,14 +135,14 @@ switch ($callback_data[0]) {
 				[['text' => '✊', 'callback_data' => 'stage_3:rock:'.$callback_user_id], ['text' => '✋', 'callback_data' => 'stage_3:paper:'.$callback_user_id], ['text' => '✌', 'callback_data' => 'stage_3:scissors:'.$callback_user_id]]
 			]];
 			
-			updateMessage($callback_message_id, "Отлично\!\n\nИграют @".$where_to_put_play['player_1_username']." и @".$where_to_put_play['player_2_username']."\n\n@".$callback_username." сделал ход, жду ответа", $game_keyboard);
+			updateMessage($callback_message_id, "Отлично\!\n\nИграют @".strtr($where_to_put_play['player_1_username'], $markdownify_array)." и @".strtr($where_to_put_play['player_2_username'], $markdownify_array)."\n\n@".$callback_username." сделал ход, жду ответа", $game_keyboard);
 		
 		} else {
 			$game_keyboard = ['inline_keyboard' => [
 				[['text' => '✊', 'callback_data' => 'stage_2:rock:'.$callback_user_id], ['text' => '✋', 'callback_data' => 'stage_2:paper:'.$callback_user_id], ['text' => '✌', 'callback_data' => 'stage_2:scissors:'.$callback_user_id]]
 			]];
 	
-			updateMessage($callback_message_id, "Отлично\!\n\nИграют @".$where_to_put_play['player_1_username']." и @".$where_to_put_play['player_2_username']."\n\nОжидаю хода\.\.\.", $game_keyboard, "Ходить могут только игроки @".$where_to_put_play['player_1_username']." и @".$where_to_put_play['player_2_username']);
+			updateMessage($callback_message_id, "Отлично\!\n\nИграют @".strtr($where_to_put_play['player_1_username'], $markdownify_array)." и @".strtr($where_to_put_play['player_2_username'], $markdownify_array)."\n\nОжидаю хода\.\.\.", $game_keyboard, "Ходить могут только игроки @".$where_to_put_play['player_1_username']." и @".$where_to_put_play['player_2_username']);
 			mysqli_free_result($where_to_put_play);
 			mysqli_close($db);
 			break;
@@ -166,7 +166,7 @@ switch ($callback_data[0]) {
 					[['text' => '✊', 'callback_data' => 'stage_3:rock:'.$callback_user_id], ['text' => '✋', 'callback_data' => 'stage_3:paper:'.$callback_user_id], ['text' => '✌', 'callback_data' => 'stage_3:scissors:'.$callback_user_id]]
 				]];
 				
-				updateMessage($callback_message_id, "Отлично\!\n\nИграют @".$where_to_put_play['player_1_username']." и @".$where_to_put_play['player_2_username']."\n\n@".$callback_username." сделал ход, жду ответа", $game_keyboard, "Вы уже ходили!");
+				updateMessage($callback_message_id, "Отлично\!\n\nИграют @".strtr($where_to_put_play['player_1_username'], $markdownify_array)." и @".strtr($where_to_put_play['player_2_username'], $markdownify_array)."\n\n@".$callback_username." сделал ход, жду ответа", $game_keyboard, "Вы уже ходили!");
 				break;
 			}
 
@@ -233,14 +233,14 @@ switch ($callback_data[0]) {
 			
 			if ($winner == NULL) {
 				mysqli_query($db, "UPDATE history set result='tie' where game_id='".$callback_message_id."'");
-				updateMessage($callback_message_id, "Игра окончена\!\n\nНичья, @".$results['player_1_username']." и @".$results['player_2_username']." выбрали ".$play_tie, $game_keyboard);
+				updateMessage($callback_message_id, "Игра окончена\!\n\nНичья, @".strtr($results['player_1_username'], $markdownify_array)." и @".strtr($results['player_2_username'], $markdownify_array)." выбрали ".$play_tie, $game_keyboard);
 			} else {
 				if ($winner == 1) {
 					mysqli_query($db, "UPDATE history set result='player_1_won' where game_id='".$callback_message_id."'");
-					updateMessage($callback_message_id, "Игра окончена\!\n\nВыиграл @".$results['player_1_username']." c ".$play_win." против @".$results['player_2_username']." и его ".$play_lose, $game_keyboard);
+					updateMessage($callback_message_id, "Игра окончена\!\n\nВыиграл @".strtr($results['player_1_username'], $markdownify_array)." c ".$play_win." против @".strtr($results['player_2_username'], $markdownify_array)." и его ".$play_lose, $game_keyboard);
 				} else {
 					mysqli_query($db, "UPDATE history set result='player_2_won' where game_id='".$callback_message_id."'");
-					updateMessage($callback_message_id, "Игра окончена\!\n\nВыиграл @".$results['player_2_username']." c ".$play_win." против @".$results['player_1_username']." и его ".$play_lose, $game_keyboard);
+					updateMessage($callback_message_id, "Игра окончена\!\n\nВыиграл @".strtr($results['player_2_username'], $markdownify_array)." c ".$play_win." против @".strtr($results['player_1_username'], $markdownify_array)." и его ".$play_lose, $game_keyboard);
 				}
 			}
 			break;
@@ -249,7 +249,12 @@ switch ($callback_data[0]) {
 				[['text' => '✊', 'callback_data' => 'stage_3:rock:'.$callback_user_id], ['text' => '✋', 'callback_data' => 'stage_3:paper:'.$callback_user_id], ['text' => '✌', 'callback_data' => 'stage_3:scissors:'.$callback_user_id]]
 			]];
 			
-			updateMessage($callback_message_id, "Отлично\!\n\nИграют @".$where_to_put_play['player_1_username']." и @".$where_to_put_play['player_2_username']."\n\n@".$callback_username." сделал ход, жду ответа", $game_keyboard, "Ходить могут только игроки @".$where_to_put_play['player_1_username']." и @".$where_to_put_play['player_2_username']);
+			if (is_null($where_to_put_play['play_1'])) {
+				updateMessage($callback_message_id, "Отлично\!\n\nИграют @".strtr($where_to_put_play['player_1_username'], $markdownify_array)." и @".strtr($where_to_put_play['player_2_username'], $markdownify_array)."\n\n@".strtr($where_to_put_play['player_2_username'], $markdownify_array)." сделал ход, жду ответа", $game_keyboard, "Ходить могут только игроки @".$where_to_put_play['player_1_username']." и @".$where_to_put_play['player_2_username']);
+			} elseif (is_null($where_to_put_play['play_2'])) {
+				updateMessage($callback_message_id, "Отлично\!\n\nИграют @".strtr($where_to_put_play['player_1_username'], $markdownify_array)." и @".strtr($where_to_put_play['player_2_username'], $markdownify_array)."\n\n@".strtr($where_to_put_play['player_1_username'], $markdownify_array)." сделал ход, жду ответа", $game_keyboard, "Ходить могут только игроки @".$where_to_put_play['player_1_username']." и @".$where_to_put_play['player_2_username']);
+			}
+			
 			break;
 		}
 
