@@ -73,7 +73,7 @@ if ($message == '/start') {
 
 if ($query_id !== 'inline_query_id_empty') {
 	$knb_keyboard = ['inline_keyboard' => [
-		[['text' => 'Я в деле!', 'callback_data' => 'stage_1:'.$inline_user_id.':'.$inline_username]]
+		[['text' => array_rand(array('Я в деле!', 'Поехали!', 'Го!', 'Раскатаю на изи')), 'callback_data' => 'stage_1:'.$inline_user_id.':'.$inline_username]]
 	]];
 	sendNewGame($query_id, "@".$inline_username." хочет сыграть в Камень Ножницы Бумагу\!\n\nНажми на кнопку чтобы присоединиться:", $knb_keyboard);
 }
@@ -86,7 +86,7 @@ switch ($callback_data[0]) {
 	case 'stage_1':
 		if ($callback_user_id == $callback_data[1]) {
 			$knb_keyboard = ['inline_keyboard' => [
-				[['text' => 'Я в деле!', 'callback_data' => 'stage_1:'.$inline_user_id.':'.$inline_username]]
+				[['text' => array_rand(array('Я в деле!', 'Поехали!', 'Го!', 'Раскатаю на изи')), 'callback_data' => 'stage_1:'.$inline_user_id.':'.$inline_username]]
 			]];
 			updateMessage($$callback_message_id, "@".strtr($inline_username, $markdownify_array)." хочет сыграть в Камень Ножницы Бумагу\!\n\nНажми на кнопку чтобы присоединиться:", $knb_keyboard, "Вы не можете играть сами с собой, какой в этом смысл?");
 			break;
@@ -200,8 +200,9 @@ switch ($callback_data[0]) {
 				} 
 			}
 	
+			
 			$game_keyboard = ['inline_keyboard' => [
-				[['text' => 'Играть снова', 'switch_inline_query_current_chat' => '']]
+				[['text' => array_rand(array('Матч-реванш!', 'Играем до трёх!', 'Ещё разок!', 'Подожди, я настроюсь...', 'Так нечестно!', 'ДА КАК ТАК?!')), 'switch_inline_query_current_chat' => '']]
 			]];
 			
 			if ($winner == NULL) {
