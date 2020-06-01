@@ -89,9 +89,9 @@ switch ($callback_data[0]) {
 	case 'stage_1':
 		if ($callback_user_id == $callback_data[1]) {
 			$knb_keyboard = ['inline_keyboard' => [
-				[['text' => $start_texts[array_rand($start_texts)], 'callback_data' => 'stage_1:'.$inline_user_id.':'.$inline_username]]
+				[['text' => $start_texts[array_rand($start_texts)], 'callback_data' => 'stage_1:'.$callback_user_id.':'.$callback_username]]
 			]];
-			updateMessage($callback_message_id, strtr($inline_username, $markdownify_array)." хочет сыграть в Камень Ножницы Бумагу\!\n\nНажми на кнопку чтобы присоединиться:", $knb_keyboard, "Вы не можете играть сами с собой, какой в этом смысл?");
+			updateMessage($callback_message_id, strtr($callback_username, $markdownify_array)." хочет сыграть в Камень Ножницы Бумагу\!\n\nНажми на кнопку чтобы присоединиться:", $knb_keyboard, "Вы не можете играть сами с собой, какой в этом смысл?");
 			break;
 		}
 		$db = mysqli_connect($db_host, $db_username, $db_pass, $db_schema);
