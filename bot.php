@@ -2,6 +2,7 @@
 ini_set('display_errors', 1);
 include 'config.php';
 header('Content-Type: text/html; charset=utf-8');
+mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 
 $api = 'https://api.telegram.org/bot'.$tg_bot_token;
 
@@ -67,6 +68,10 @@ $markdownify_array = [
 	'`' => "\`",
 ];
 
+$markdownify_array_user = [
+	'_' => '\_'
+];
+
 if ($message == '/start') {
 	$setup_keyboard = ['inline_keyboard' => [
 		[['text' => 'Начать игру', 'switch_inline_query' => '']]
@@ -78,7 +83,7 @@ if ($query_id !== 'inline_query_id_empty') {
 	$knb_keyboard = ['inline_keyboard' => [
 		[['text' => $start_texts[array_rand($start_texts)], 'callback_data' => 'stage_1:'.$inline_user_id.':'.$inline_username]]
 	]];
-	sendNewGame($query_id, $inline_username." хочет сыграть в Камень Ножницы Бумагу\!\n\nНажми на кнопку чтобы присоединиться:", $knb_keyboard);
+	sendNewGame($query_id, strtr($inline_username, $markdownify_array_user)." хочет сыграть в Камень Ножницы Бумагу\!\n\nНажми на кнопку чтобы присоединиться:", $knb_keyboard);
 }
 
 $callback_data = explode(':', $callback_data);
@@ -136,16 +141,12 @@ switch ($callback_data[0]) {
 			$game_keyboard = ['inline_keyboard' => [
 				[['text' => '✊', 'callback_data' => 'stage_2:✊:'.$callback_user_id], ['text' => '✋', 'callback_data' => 'stage_2:✋:'.$callback_user_id], ['text' => '✌', 'callback_data' => 'stage_2:✌:'.$callback_user_id]]
 			]];
-
-			error_log("FAILED GAME:\n".print_r($callback_message_id, TRUE)."\n\n\nFAILED USER:\n".print_r($callback_user_id, TRUE)."\n\n".print_r($where_to_put_play,TRUE));
 	
 			updateMessage($callback_message_id, "Отлично\!\n\nИграют ".strtr($where_to_put_play['player_1_username'], $markdownify_array)." и ".strtr($where_to_put_play['player_2_username'], $markdownify_array)."\n\nОжидаю хода\.\.\.", $game_keyboard, "Ходить могут только игроки ".$where_to_put_play['player_1_username']." и ".$where_to_put_play['player_2_username']);
-			mysqli_free_result($where_to_put_play);
+
 			mysqli_close($db);
 			break;
 		}
-
-		mysqli_free_result($where_to_put_play);
 		mysqli_close($db);
 	break;
 
@@ -220,8 +221,6 @@ switch ($callback_data[0]) {
 					updateMessage($callback_message_id, "Игра окончена\!\n\nВыиграл ".strtr($results['player_2_username'], $markdownify_array)." c ".$results['play_2']." против ".strtr($results['player_1_username'], $markdownify_array)." и его ".$results['play_1'], $game_keyboard);
 				}
 			}
-
-			mysqli_free_result($results);
 			mysqli_close($db);
 			break;
 		} else {
